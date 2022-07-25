@@ -37,6 +37,11 @@ public class NotesAdapter extends RecyclerView.Adapter<NotesAdapter.NotesViewHol
         return notesViewHolder;
     }
 
+    public void removeItem(int position) {
+        notesData.remove(position);
+        notifyItemRemoved(position);
+    }
+
     @Override
     public void onBindViewHolder(@NonNull NotesViewHolder holder, int position) {
         holder.setData(notesData.get(position));
@@ -64,9 +69,11 @@ public class NotesAdapter extends RecyclerView.Adapter<NotesAdapter.NotesViewHol
         public void setData(NotesData notesData) {
             title.setText(notesData.title);
             note.setText(notesData.note);
-            time.setText("Last updated:" + notesData.date);
-//            System.out.println(notesData.title+notesData.note+notesData.date);
+            time.setText("Updated: " + notesData.date);
             layout.setOnClickListener(view-> {notesListener.onNotesClicked(notesData);});
+            layout.setOnLongClickListener(view-> {notesListener.onNotesLongClicked(notesData, getAbsoluteAdapterPosition());
+                return true;
+            });
         }
 
     }

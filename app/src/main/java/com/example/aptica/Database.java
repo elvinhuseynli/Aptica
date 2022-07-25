@@ -2,6 +2,7 @@ package com.example.aptica;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.annotation.SuppressLint;
 import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
@@ -36,6 +37,32 @@ public class Database extends SQLiteOpenHelper {
         contentValues.put("date", date);
         long result = database.insert("notes", null, contentValues);
         return result != -1;
+    }
+
+    public Boolean updateDatabase(String id, String title, String note, String date) {
+        SQLiteDatabase database = this.getWritableDatabase();
+        Cursor result = database.rawQuery("select * from notes where id=?", new String[]{id});
+        if(result.getCount()!=0) {
+            database.execSQL("update notes set title=?, note=?, date=? where id=?", new String[]{title, note, date, id});
+            return true;
+        }
+        return false;
+    }
+
+    public Boolean deleteRows(String id) {
+        SQLiteDatabase database = getWritableDatabase();
+        Cursor result = database.rawQuery("select * from notes where id=?", new String[]{id});
+        if(result.getCount()!=0) {
+            database.execSQL("delete from notes where id=?", new String[]{id});
+            return true;
+        }
+        return false;
+    }
+
+    public Cursor getCurrentDataId(String updateId) {
+        SQLiteDatabase database = this.getWritableDatabase();
+        Cursor result = database.rawQuery("select * from notes where id=?", new String[]{updateId});
+        return result;
     }
 
     public Cursor getData() {
